@@ -1,6 +1,7 @@
 use std::io::{Read, Seek, SeekFrom};
 use std::time::Duration;
 
+use crate::source::{i16_to_f32, i24_to_f32, i32_to_f32, i8_to_f32};
 use crate::Source;
 
 use hound::{SampleFormat, WavReader};
@@ -55,27 +56,31 @@ impl<R> Iterator for SamplesIterator<R>
 where
     R: Read + Seek,
 {
-    type Item = i16;
+    type Item = f32;
 
     #[inline]
-    fn next(&mut self) -> Option<i16> {
+    fn next(&mut self) -> Option<f32> {
         let spec = self.reader.spec();
         match (spec.sample_format, spec.bits_per_sample) {
             (SampleFormat::Float, 32) => self.reader.samples().next().map(|value| {
                 self.samples_read += 1;
-                f32_to_i16(value.unwrap_or(0.0))
+                value.unwrap_or(0.0)
+            }),
+            (SampleFormat::Int, 32) => self.reader.samples().next().map(|value| {
+                self.samples_read += 1;
+                i32_to_f32(value.unwrap_or(0))
             }),
             (SampleFormat::Int, 16) => self.reader.samples().next().map(|value| {
                 self.samples_read += 1;
-                value.unwrap_or(0)
+                i16_to_f32(value.unwrap_or(0))
             }),
             (SampleFormat::Int, 24) => self.reader.samples().next().map(|value| {
                 self.samples_read += 1;
-                i24_to_i16(value.unwrap_or(0))
+                i24_to_f32(value.unwrap_or(0))
             }),
             (SampleFormat::Int, 8) => self.reader.samples().next().map(|value| {
                 self.samples_read += 1;
-                i8_to_i16(value.unwrap_or(0))
+                i8_to_f32(value.unwrap_or(0))
             }),
             (sample_format, bits_per_sample) => panic!(
                 "Unimplemented wav spec: {:?}, {}",
@@ -123,10 +128,10 @@ impl<R> Iterator for WavDecoder<R>
 where
     R: Read + Seek,
 {
-    type Item = i16;
+    type Item = f32;
 
     #[inline]
-    fn next(&mut self) -> Option<i16> {
+    fn next(&mut self) -> Option<f32> {
         self.reader.next()
     }
 
@@ -152,27 +157,4 @@ where
 
     data.seek(SeekFrom::Start(stream_pos)).unwrap();
     true
-}
-
-/// Returns a 32 bit WAV float as an i16. WAV floats are typically in the range of
-/// [-1.0, 1.0] while i16s are in the range [-32768, 32767]. Note that this
-/// function definitely causes precision loss but hopefully this isn't too
-/// audiable when actually playing?
-fn f32_to_i16(f: f32) -> i16 {
-    // prefer to clip the input rather than be excessively loud.
-    (f.max(-1.0).min(1.0) * i16::max_value() as f32) as i16
-}
-
-/// Returns a 24 bit WAV int as an i16. Note that this is a 24 bit integer, not a
-/// 32 bit one. 24 bit ints are in the range [−8,388,608, 8,388,607] while i16s
-/// are in the range [-32768, 32767]. Note that this function definitely causes
-/// precision loss but hopefully this isn't too audiable when actually playing?
-fn i24_to_i16(i: i32) -> i16 {
-    (i >> 8) as i16
-}
-
-/// Returns an 8-bit WAV int as an i16. This scales the sample value by a factor
-/// of 256.
-fn i8_to_i16(i: i8) -> i16 {
-    i as i16 * 256
 }

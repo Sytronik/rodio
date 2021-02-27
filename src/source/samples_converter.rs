@@ -96,3 +96,23 @@ where
         self.inner.total_duration()
     }
 }
+
+#[inline]
+pub fn i8_to_f32(i: i8) -> f32 {
+    (i as f32 / 2u8.pow(7) as f32).clamp(-1., 1.)
+}
+
+#[inline]
+pub fn i16_to_f32(i: i16) -> f32 {
+    (i as f32 / 2u16.pow(15) as f32).clamp(-1., 1.)
+}
+
+#[inline]
+pub fn i24_to_f32(i: i32) -> f32 {
+    (i as f32 / 2u32.pow(23) as f32).clamp(-1., 1.)
+}
+
+#[inline]
+pub fn i32_to_f32(i: i32) -> f32 {
+    (i as f32 / 2u32.pow(31) as f32).clamp(-1., 1.)
+}

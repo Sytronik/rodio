@@ -141,10 +141,10 @@ impl<R> Iterator for Decoder<R>
 where
     R: Read + Seek,
 {
-    type Item = i16;
+    type Item = f32;
 
     #[inline]
-    fn next(&mut self) -> Option<i16> {
+    fn next(&mut self) -> Option<f32> {
         match &mut self.0 {
             #[cfg(feature = "wav")]
             DecoderImpl::Wav(source) => source.next(),
@@ -243,10 +243,10 @@ impl<R> Iterator for LoopedDecoder<R>
 where
     R: Read + Seek,
 {
-    type Item = i16;
+    type Item = f32;
 
     #[inline]
-    fn next(&mut self) -> Option<i16> {
+    fn next(&mut self) -> Option<f32> {
         if let Some(sample) = match &mut self.0 {
             #[cfg(feature = "wav")]
             DecoderImpl::Wav(source) => source.next(),

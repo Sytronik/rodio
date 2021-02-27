@@ -85,10 +85,10 @@ impl<R> Iterator for FlacDecoder<R>
 where
     R: Read + Seek,
 {
-    type Item = i16;
+    type Item = f32;
 
     #[inline]
-    fn next(&mut self) -> Option<i16> {
+    fn next(&mut self) -> Option<f32> {
         loop {
             if self.current_block_off < self.current_block.len() {
                 // Read from current block.
@@ -97,12 +97,9 @@ where
                     + self.current_block_off / self.channels as usize;
                 let raw_val = self.current_block[real_offset];
                 self.current_block_off += 1;
-                let real_val = match self.bits_per_sample.cmp(&16) {
-                    Ordering::Less => (raw_val << (16 - self.bits_per_sample)) as i16,
-                    Ordering::Equal => raw_val as i16,
-                    Ordering::Greater => (raw_val >> (self.bits_per_sample - 16)) as i16,
-                };
-                return Some(real_val as i16);
+                let real_val =
+                    (raw_val as f32 / 2u32.pow(self.bits_per_sample - 1) as f32).clamp(-1., 1.);
+                return Some(real_val);
             }
 
             // Load the next block.

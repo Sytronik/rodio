@@ -1,6 +1,7 @@
 use std::io::{Read, Seek};
 use std::time::Duration;
 
+use crate::source::i16_to_f32;
 use crate::Source;
 
 use minimp3::{Decoder, Frame};
@@ -62,10 +63,10 @@ impl<R> Iterator for Mp3Decoder<R>
 where
     R: Read + Seek,
 {
-    type Item = i16;
+    type Item = f32;
 
     #[inline]
-    fn next(&mut self) -> Option<i16> {
+    fn next(&mut self) -> Option<f32> {
         if self.current_frame_offset == self.current_frame.data.len() {
             match self.decoder.next_frame() {
                 Ok(frame) => self.current_frame = frame,
@@ -77,6 +78,6 @@ where
         let v = self.current_frame.data[self.current_frame_offset];
         self.current_frame_offset += 1;
 
-        Some(v)
+        Some(i16_to_f32(v))
     }
 }

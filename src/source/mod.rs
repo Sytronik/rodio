@@ -28,6 +28,7 @@ pub use self::stoppable::Stoppable;
 pub use self::take::TakeDuration;
 pub use self::uniform::UniformSourceIterator;
 pub use self::zero::Zero;
+pub use self::samples_converter::{i8_to_f32, i16_to_f32, i24_to_f32, i32_to_f32};
 
 mod amplify;
 mod blt;

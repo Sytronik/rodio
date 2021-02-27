@@ -2,6 +2,7 @@ use std::io::{Read, Seek, SeekFrom};
 use std::time::Duration;
 use std::vec;
 
+use crate::source::i16_to_f32;
 use crate::Source;
 
 use lewton::inside_ogg::OggStreamReader;
@@ -79,22 +80,22 @@ impl<R> Iterator for VorbisDecoder<R>
 where
     R: Read + Seek,
 {
-    type Item = i16;
+    type Item = f32;
 
     #[inline]
-    fn next(&mut self) -> Option<i16> {
+    fn next(&mut self) -> Option<f32> {
         if let Some(sample) = self.current_data.next() {
             if self.current_data.len() == 0 {
                 if let Ok(Some(data)) = self.stream_reader.read_dec_packet_itl() {
                     self.current_data = data.into_iter();
                 }
             }
-            Some(sample)
+            Some(i16_to_f32(sample))
         } else {
             if let Ok(Some(data)) = self.stream_reader.read_dec_packet_itl() {
                 self.current_data = data.into_iter();
             }
-            self.current_data.next()
+            self.current_data.next().and_then(|x| Some(i16_to_f32(x)))
         }
     }
 
