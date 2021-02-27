@@ -53,4 +53,9 @@ where
     fn total_duration(&self) -> Option<Duration> {
         Some(Duration::new(0, 0))
     }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        S::format_str()
+    }
 }

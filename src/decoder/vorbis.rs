@@ -74,6 +74,14 @@ where
     fn total_duration(&self) -> Option<Duration> {
         None
     }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        format!(
+            "nominal {} kbps",
+            self.stream_reader.ident_hdr.bitrate_nominal
+        )
+    }
 }
 
 impl<R> Iterator for VorbisDecoder<R>

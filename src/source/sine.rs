@@ -55,4 +55,9 @@ impl Source for SineWave {
     fn total_duration(&self) -> Option<Duration> {
         None
     }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        String::from("FLOAT32")
+    }
 }

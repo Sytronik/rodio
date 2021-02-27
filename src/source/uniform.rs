@@ -20,6 +20,7 @@ where
     target_channels: u16,
     target_sample_rate: u32,
     total_duration: Option<Duration>,
+    sample_format_str: String,
 }
 
 impl<I, D> UniformSourceIterator<I, D>
@@ -35,6 +36,7 @@ where
         target_sample_rate: u32,
     ) -> UniformSourceIterator<I, D> {
         let total_duration = input.total_duration();
+        let sample_format_str = input.sample_format_str();
         let input = UniformSourceIterator::bootstrap(input, target_channels, target_sample_rate);
 
         UniformSourceIterator {
@@ -42,6 +44,7 @@ where
             target_channels,
             target_sample_rate,
             total_duration,
+            sample_format_str,
         }
     }
 
@@ -134,6 +137,11 @@ where
     #[inline]
     fn total_duration(&self) -> Option<Duration> {
         self.total_duration
+    }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        self.sample_format_str.clone()
     }
 }
 

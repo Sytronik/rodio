@@ -208,6 +208,11 @@ where
     fn total_duration(&self) -> Option<Duration> {
         self.total_duration
     }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        I::Item::format_str()
+    }
 }
 
 impl<I> Clone for Buffered<I>

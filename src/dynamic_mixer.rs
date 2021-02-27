@@ -94,6 +94,11 @@ where
     fn total_duration(&self) -> Option<Duration> {
         None
     }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        String::from("FLOAT32")
+    }
 }
 
 impl<S> Iterator for DynamicMixer<S>

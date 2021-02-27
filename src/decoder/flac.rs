@@ -3,6 +3,7 @@ use std::io::{Read, Seek, SeekFrom};
 use std::mem;
 use std::time::Duration;
 
+use crate::source::{i16_to_f32, i24_to_f32, i32_to_f32, i8_to_f32};
 use crate::Source;
 
 use claxon::FlacReader;
@@ -78,6 +79,11 @@ where
         // so we do not divide by `self.channels` here.
         self.samples
             .map(|s| Duration::from_micros(s * 1_000_000 / self.sample_rate as u64))
+    }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        format!("PCM{}", self.bits_per_sample)
     }
 }
 

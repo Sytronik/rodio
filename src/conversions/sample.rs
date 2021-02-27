@@ -79,6 +79,8 @@ pub trait Sample: CpalSample {
 
     /// Returns the value corresponding to the absence of sound.
     fn zero_value() -> Self;
+
+    fn format_str() -> String;
 }
 
 impl Sample for u16 {
@@ -105,6 +107,10 @@ impl Sample for u16 {
     fn zero_value() -> u16 {
         32768
     }
+
+    fn format_str() -> String {
+        String::from("UNSIGNED PCM16")
+    }
 }
 
 impl Sample for i16 {
@@ -128,6 +134,10 @@ impl Sample for i16 {
     fn zero_value() -> i16 {
         0
     }
+
+    fn format_str() -> String {
+        String::from("PCM16")
+    }
 }
 
 impl Sample for f32 {
@@ -149,5 +159,9 @@ impl Sample for f32 {
     #[inline]
     fn zero_value() -> f32 {
         0.0
+    }
+
+    fn format_str() -> String {
+        String::from("FLOAT32")
     }
 }

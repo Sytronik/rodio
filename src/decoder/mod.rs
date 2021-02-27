@@ -237,6 +237,21 @@ where
             DecoderImpl::None(_) => Some(Duration::default()),
         }
     }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        match self.0 {
+            #[cfg(feature = "wav")]
+            DecoderImpl::Wav(ref source) => source.sample_format_str(),
+            #[cfg(feature = "vorbis")]
+            DecoderImpl::Vorbis(ref source) => source.sample_format_str(),
+            #[cfg(feature = "flac")]
+            DecoderImpl::Flac(ref source) => source.sample_format_str(),
+            #[cfg(feature = "mp3")]
+            DecoderImpl::Mp3(ref source) => source.sample_format_str(),
+            DecoderImpl::None(_) => String::new(),
+        }
+    }
 }
 
 impl<R> Iterator for LoopedDecoder<R>
@@ -372,6 +387,21 @@ where
     #[inline]
     fn total_duration(&self) -> Option<Duration> {
         None
+    }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        match self.0 {
+            #[cfg(feature = "wav")]
+            DecoderImpl::Wav(ref source) => source.sample_format_str(),
+            #[cfg(feature = "vorbis")]
+            DecoderImpl::Vorbis(ref source) => source.sample_format_str(),
+            #[cfg(feature = "flac")]
+            DecoderImpl::Flac(ref source) => source.sample_format_str(),
+            #[cfg(feature = "mp3")]
+            DecoderImpl::Mp3(ref source) => source.sample_format_str(),
+            DecoderImpl::None(_) => String::new(),
+        }
     }
 }
 

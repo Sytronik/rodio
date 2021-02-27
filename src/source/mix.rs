@@ -118,4 +118,9 @@ where
             _ => None,
         }
     }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        String::from("FLOAT32")
+    }
 }

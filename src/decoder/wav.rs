@@ -6,6 +6,14 @@ use crate::Source;
 
 use hound::{SampleFormat, WavReader};
 
+#[inline]
+fn make_sample_format_str(sample_format: SampleFormat, bits_per_sample: u16) -> String {
+    match sample_format {
+        SampleFormat::Float => format!("FLOAT{}", bits_per_sample),
+        SampleFormat::Int => format!("PCM{}", bits_per_sample),
+    }
+}
+
 /// Decoder for the WAV format.
 pub struct WavDecoder<R>
 where
@@ -14,6 +22,7 @@ where
     reader: SamplesIterator<R>,
     sample_rate: u32,
     channels: u16,
+    sample_format_str: String,
 }
 
 impl<R> WavDecoder<R>
@@ -37,6 +46,7 @@ where
             reader,
             sample_rate: spec.sample_rate,
             channels: spec.channels,
+            sample_format_str: make_sample_format_str(spec.sample_format, spec.bits_per_sample),
         })
     }
     pub fn into_inner(self) -> R {
@@ -121,6 +131,11 @@ where
     fn total_duration(&self) -> Option<Duration> {
         let ms = self.len() as u64 * 1000 / (self.channels as u64 * self.sample_rate as u64);
         Some(Duration::from_millis(ms))
+    }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        self.sample_format_str.clone()
     }
 }
 

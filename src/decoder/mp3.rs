@@ -13,6 +13,7 @@ where
     decoder: Decoder<R>,
     current_frame: Frame,
     current_frame_offset: usize,
+    bitrate: i32,
 }
 
 impl<R> Mp3Decoder<R>
@@ -22,11 +23,13 @@ where
     pub fn new(data: R) -> Result<Self, ()> {
         let mut decoder = Decoder::new(data);
         let current_frame = decoder.next_frame().map_err(|_| ())?;
+        let bitrate = current_frame.bitrate;
 
         Ok(Mp3Decoder {
             decoder,
             current_frame,
             current_frame_offset: 0,
+            bitrate: bitrate,
         })
     }
     pub fn into_inner(self) -> R {
@@ -56,6 +59,11 @@ where
     #[inline]
     fn total_duration(&self) -> Option<Duration> {
         None
+    }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        format!("{} kbps", self.bitrate)
     }
 }
 

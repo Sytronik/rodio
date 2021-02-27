@@ -105,4 +105,9 @@ where
             .total_duration()
             .map(|val| val + self.requested_duration)
     }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        self.input.sample_format_str()
+    }
 }

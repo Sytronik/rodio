@@ -135,6 +135,16 @@ where
     fn total_duration(&self) -> Option<Duration> {
         None
     }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        if let Some(ref src) = self.current_source {
+            src.sample_format_str()
+        } else {
+            // Dummy value that only happens if the iterator was empty.
+            String::new()
+        }
+    }
 }
 
 #[cfg(test)]

@@ -84,6 +84,11 @@ where
     fn total_duration(&self) -> Option<Duration> {
         None
     }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        self.inner.sample_format_str()
+    }
 }
 
 impl<I> Clone for Repeat<I>

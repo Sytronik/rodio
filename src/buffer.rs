@@ -84,6 +84,10 @@ where
     fn total_duration(&self) -> Option<Duration> {
         Some(self.duration)
     }
+
+    fn sample_format_str(&self) -> String {
+        S::format_str()
+    }
 }
 
 impl<S> Iterator for SamplesBuffer<S>

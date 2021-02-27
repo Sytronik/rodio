@@ -95,6 +95,11 @@ where
     fn total_duration(&self) -> Option<Duration> {
         self.inner.total_duration()
     }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        self.inner.sample_format_str()
+    }
 }
 
 #[inline]

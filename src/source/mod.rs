@@ -20,6 +20,7 @@ pub use self::pausable::Pausable;
 pub use self::periodic::PeriodicAccess;
 pub use self::repeat::Repeat;
 pub use self::samples_converter::SamplesConverter;
+pub use self::samples_converter::{i16_to_f32, i24_to_f32, i32_to_f32, i8_to_f32};
 pub use self::sine::SineWave;
 pub use self::skip::SkipDuration;
 pub use self::spatial::Spatial;
@@ -28,7 +29,6 @@ pub use self::stoppable::Stoppable;
 pub use self::take::TakeDuration;
 pub use self::uniform::UniformSourceIterator;
 pub use self::zero::Zero;
-pub use self::samples_converter::{i8_to_f32, i16_to_f32, i24_to_f32, i32_to_f32};
 
 mod amplify;
 mod blt;
@@ -144,6 +144,8 @@ where
     ///
     /// `None` indicates at the same time "infinite" or "unknown".
     fn total_duration(&self) -> Option<Duration>;
+
+    fn sample_format_str(&self) -> String;
 
     /// Stores the source in a buffer in addition to returning it. This iterator can be cloned.
     #[inline]
@@ -353,6 +355,11 @@ where
     fn total_duration(&self) -> Option<Duration> {
         (**self).total_duration()
     }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        (**self).sample_format_str()
+    }
 }
 
 impl<S> Source for Box<dyn Source<Item = S> + Send>
@@ -378,6 +385,11 @@ where
     fn total_duration(&self) -> Option<Duration> {
         (**self).total_duration()
     }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        (**self).sample_format_str()
+    }
 }
 
 impl<S> Source for Box<dyn Source<Item = S> + Send + Sync>
@@ -402,5 +414,10 @@ where
     #[inline]
     fn total_duration(&self) -> Option<Duration> {
         (**self).total_duration()
+    }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        (**self).sample_format_str()
     }
 }

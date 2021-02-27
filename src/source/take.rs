@@ -176,4 +176,9 @@ where
             None
         }
     }
+
+    #[inline]
+    fn sample_format_str(&self) -> String {
+        self.input.sample_format_str()
+    }
 }
